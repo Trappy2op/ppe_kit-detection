@@ -1,0 +1,60 @@
+1. Install Python & GPU Drivers
+
+Install Python ≥3.10 (official Python installer)
+
+Install GPU drivers + CUDA if using NVIDIA GPU (needed for local 4-bit/LoRA inference & training).
+
+Check with: nvidia-smi in terminal.
+
+Make sure pip works in terminal.
+
+2. Create a Python Virtual Environment (recommended)
+python -m venv venv
+# Activate it:
+# Windows- venv\Scripts\activate
+
+
+3. Install Required Packages
+
+Inside the virtual environment: pip install --upgrade pip
+pip install torch transformers accelerate peft bitsandbytes sentence-transformers pymupdf faiss-cpu scikit-learn
+
+torch → GPU version if you have CUDA:
+
+pip install torch --index-url https://download.pytorch.org/whl/cu121
+
+4 . Transfer Your Project Files
+
+Copy your Tkinter app + trained LoRA adapter:
+
+my_project/
+  ├── pdf_rag_mistral_local_train.py  # your Tkinter GUI
+  ├── rag_texts.json                   # RAG chunks
+  ├── faiss_index.bin                  # FAISS index
+  └── lora_adapter/                     # trained LoRA weights + tokenizer
+
+
+Make sure the folder structure stays the same.
+
+5. Environment Variables (optional)
+
+If you want HF API fallback:
+Set HF_TOKEN as environment variable (or hardcode in app):
+
+set HF_TOKEN=your_hf_token_here  # Windows
+
+6. Run the Tkinter App
+
+Open VS Code terminal inside your project folder:
+python pdf_rag_mistral_local_train.py
+The app will:
+Load FAISS index + JSONL RAG texts
+Detect and load local LoRA adapter automatically if present
+Enable chat with trained LoRA
+Fall back to HF API if GPU / adapter unavailable
+
+7. Notes
+
+GPU Recommended: Mistral 7B + LoRA still needs ~8GB VRAM even in 4-bit mode.
+No GPU? You can still use HF API fallback.
+Keep lora_adapter/ folder intact — it contains all model weights and tokenizer.
